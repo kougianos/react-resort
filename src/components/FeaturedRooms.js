@@ -19,6 +19,7 @@ export default class FeaturedRooms extends Component {
 		return (
 
 			<section className="featured-rooms">
+				
 				<Title title="featured rooms"/>
 
 				<div className="featured-rooms-center">
@@ -27,7 +28,6 @@ export default class FeaturedRooms extends Component {
 
 				</div>
 
-				
 			</section>
 		
 		);
