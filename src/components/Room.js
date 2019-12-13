@@ -5,8 +5,7 @@ import PropTypes from 'prop-types';
 
 export default function Room({room}) {
 
-	console.log(room);
-	// destructure object
+	// destructure object into variables
 	const {name, images, slug, price} = room;
 
 	return(
