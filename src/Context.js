@@ -8,18 +8,73 @@ class RoomProvider extends Component {
 		rooms: [],
 		sortedRooms: [],
 		featuredRooms: [],
-		loading: true
+		loading: true,
+		type: 'all',
+		capacity: 1,
+		price: 0,
+		minPrice: 0,
+		maxPrice: 0,
+		minSize: 0,
+		maxSize: 0,
+		breakfast: false,
+		pets: false
 	};
 
 	// function that runs when all components mount
 	componentDidMount() {
 		let rooms = this.formatData(items);
 		let featuredRooms = rooms.filter((room) => room.featured === true);
+
+		// calculate max price and max size for rooms
+		let maxPrice = Math.max(...rooms.map(item => item.price));
+		let maxSize = Math.max(...rooms.map(item => item.size));
+
+
 		this.setState({
 			rooms,
 			featuredRooms,
 			sortedRooms: rooms,
-			loading: false 
+			loading: false,
+			price: maxPrice,
+			maxPrice,
+			maxSize
+		});
+	}
+
+	handleChange = event => {
+		const target = event.target;
+		const type = event.target.type;
+		const name = event.target.name;
+		const value = event.type === 'checkbox' ? target.checked : target.value;
+
+		this.setState({
+			[name]: value
+		}, this.filterRooms);
+	}
+
+	filterRooms = () => {
+		let {
+			rooms, type, capacity, price, minSize, maxSize, breakfast, pets
+		} = this.state;
+
+		// get all rooms
+		let tempRooms = [...rooms];
+
+		// transform to int
+		capacity = parseInt(capacity);
+
+		// filter by type
+		if(type!='all') {
+			tempRooms = tempRooms.filter(room => room.type === type);
+		}
+
+		// filter by capacity
+		if(capacity != 1) {
+			tempRooms = tempRooms.filter(room => room.capacity >= capacity);
+		}
+
+		this.setState({
+			sortedRooms: tempRooms
 		});
 	}
 
@@ -51,7 +106,8 @@ class RoomProvider extends Component {
 			// pass different variables (value and getRoom in Room context provider)
 			<RoomContext.Provider value={{
 				...this.state,
-				getRoom:this.getRoom
+				getRoom:this.getRoom,
+				handleChange: this.handleChange
 			}}>
 
 				{this.props.children}
